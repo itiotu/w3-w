@@ -12,7 +12,7 @@ export const TransactionForm = (props: TransactionFormProps) => {
 	const [error, setError] = useState<string>('');
 	const [submitDisabled, setSubmitDisabled] = useState<boolean>(false);
 
-	const handleClose = () => {  };
+	const handleClose = () => { setError(''); setShow(false) };
 	const handleShow = () => setShow(true);
 
 	const passphrase = useContext(WalletPassphraseContext);
@@ -25,7 +25,6 @@ export const TransactionForm = (props: TransactionFormProps) => {
 			setSubmitDisabled(false);
 		});
 		socketIo.on('wallet-transaction-success', message => {
-			console.log('transaction success');
 			handleClose();
 			setSubmitDisabled(false);
 			setError('');
