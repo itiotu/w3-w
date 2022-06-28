@@ -4,25 +4,27 @@ import {WalletTransaction} from "./WalletTransaction";
 import {TransactionForm} from "./TransactionForm";
 import {useContext} from "react";
 import {SocketIoContext} from "../Context/SocketContext";
+import {Wallet} from "../Types/Wallet";
 
-export const WalletEntry = (props) => {
+export const WalletEntry = (props: {item: Wallet}) => {
 
 	const [transactions, setTransactions] = useState([]);
 	const [balance, setBalance] = useState(props.item.balance);
 
 	const socketIo = useContext(SocketIoContext);
+	const walletAddress = props.item.address;
 
 	useEffect(() => {
-		socketIo.emit('retrieve-wallet-transactions', props.item.address);
+		socketIo.emit('retrieve-wallet-transactions', walletAddress);
 
 		socketIo.on('wallet-transactions', data => {
-			if (data.transactions.length > 0 && data.wallet === props.item.address) {
+			if (data.transactions.length > 0 && data.wallet === walletAddress) {
 				setTransactions(data.transactions);
 			}
 		});
 
 		socketIo.on('balance-update', data => {
-			if (data.wallet === props.item.address) {
+			if (data.wallet === walletAddress) {
 				setBalance(data.balance)
 			}
 		});
@@ -31,7 +33,7 @@ export const WalletEntry = (props) => {
 			socketIo.off('retrieve-wallet-transactions');
 			socketIo.off('new-transaction');
 		}
-	}, []) ;
+	}, [socketIo, walletAddress]) ;
 
 	return (
 		<Card className="mt-3">

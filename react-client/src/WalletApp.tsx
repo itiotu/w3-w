@@ -7,29 +7,30 @@ import { WalletPassphraseContext } from './Context/WalletPassphraseContext';
 import { useContext } from "react";
 import { SocketIoContext } from "./Context/SocketContext";
 import { Error } from "./Components/Error";
+import {Wallet} from "./Types/Wallet";
 
 export function WalletApp() {
-	const [passphrase, setPassphrase] = useState('');
-	const [wallets, setWallets] = useState([]);
-	const [error, setError] = useState('');
+	const [passphrase, setPassphrase] = useState<string>('');
+	const [wallets, setWallets] = useState<Wallet[]>([]);
+	const [error, setError] = useState<string>('');
 
 	const socketIo = useContext(SocketIoContext);
 
-	const handleCreateWalletSubmit = (passphrase) => {
+	const handleCreateWalletSubmit = (passphrase: string) => {
 		WalletService.createWallet(passphrase, socketIo);
 		setPassphrase(passphrase);
 	}
 
-	const handleWalletRetrieveSubmit = (passphrase) => {
+	const handleWalletRetrieveSubmit = (passphrase: string) => {
 		setPassphrase(passphrase);
 	}
 
 	useEffect(() => {
-		socketIo.on('wallet-listing', data => {
+		socketIo.on('wallet-listing', (data: Wallet[]) => {
 			setWallets(data);
 		});
 
-		socketIo.on('wallet-created', data => {
+		socketIo.on('wallet-created', (data: Wallet) => {
 			if (!data) {
 				return setError('Could not create wallet.');
 			}
@@ -69,6 +70,5 @@ export function WalletApp() {
 				})}
 			</Row>
 		</WalletPassphraseContext.Provider>
-
 	);
 }

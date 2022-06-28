@@ -4,14 +4,15 @@ import {WalletPassphraseContext} from "../Context/WalletPassphraseContext";
 import {Error} from "./Error";
 import {useEffect} from "react";
 import {SocketIoContext} from "../Context/SocketContext";
+import {TransactionFormElements, TransactionFormProps} from "../Types/TransactionForm";
 
 
-export const TransactionForm = (props) => {
-	const [show, setShow] = useState(false);
-	const [error, setError] = useState('');
-	const [submitDisabled, setSubmitDisabled] = useState(false);
+export const TransactionForm = (props: TransactionFormProps) => {
+	const [show, setShow] = useState<boolean>(false);
+	const [error, setError] = useState<string>('');
+	const [submitDisabled, setSubmitDisabled] = useState<boolean>(false);
 
-	const handleClose = () => !setError('') && setShow(false) ;
+	const handleClose = () => {  };
 	const handleShow = () => setShow(true);
 
 	const passphrase = useContext(WalletPassphraseContext);
@@ -24,7 +25,8 @@ export const TransactionForm = (props) => {
 			setSubmitDisabled(false);
 		});
 		socketIo.on('wallet-transaction-success', message => {
-			handleClose(true);
+			console.log('transaction success');
+			handleClose();
 			setSubmitDisabled(false);
 			setError('');
 		})
@@ -32,16 +34,18 @@ export const TransactionForm = (props) => {
 			socketIo.off('wallet-transaction-error');
 			socketIo.off('wallet-transaction-success');
 		}
-	}, []) ;
+	}, [socketIo]) ;
 
-	const handleSubmit = async (e) => {
+	const handleSubmit = async (event: React.ChangeEvent<HTMLFormElement>) => {
 		setError('');
 		setSubmitDisabled(true);
-		e.preventDefault();
+		event.preventDefault();
+
+		const { address, amount } = event.target as typeof event.target & TransactionFormElements;
 		socketIo.emit('send-transaction', {
 			fromAddress: props.fromAddress,
-			toAddress: e.target.elements.address.value,
-			amount: e.target.elements.amount.value,
+			toAddress: address.value,
+			amount: amount.value,
 			passphrase: passphrase
 		});
 	};

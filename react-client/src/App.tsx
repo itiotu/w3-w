@@ -1,7 +1,7 @@
+import React from 'react';
 import './App.css';
-import { WalletApp } from './WalletApp';
-import React from "react";
 import {SocketIoContext, socketIo} from './Context/SocketContext'
+import { WalletApp } from './WalletApp';
 
 function App() {
   return <>

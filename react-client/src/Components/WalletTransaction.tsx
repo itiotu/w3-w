@@ -1,8 +1,9 @@
 import {Col} from "react-bootstrap";
 import React from "react";
 import { BsFillArrowDownCircleFill, BsFillArrowUpCircleFill } from "react-icons/bs";
+import {TransactionProps} from "../Types/Transaction";
 
-export const WalletTransaction = (props) => {
+export const WalletTransaction = (props: {item: TransactionProps}) => {
 
 	function TransactionIcon() {
 		if (props.item.type === 'in') {

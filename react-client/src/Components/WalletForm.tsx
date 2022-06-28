@@ -1,16 +1,19 @@
-import React, {useState} from 'react';
+import React, {FormEvent, useState} from 'react';
 import {Button, Container, Form, InputGroup, Modal, Row} from "react-bootstrap";
+import {IWalletForm} from "../Types/WalletForm";
+import {WalletFormProps} from "../Types/Wallet";
 
-export const WalletForm = (props) => {
+export const WalletForm = (props: WalletFormProps) => {
 	const [show, setShow] = useState(false);
 
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		const passphrase = e.target.elements.passphrase.value;
-		props.handleSubmit(passphrase);
+	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		const { passphrase } = event.target as typeof event.target & IWalletForm;
+
+		props.handleSubmit(passphrase.value);
 		handleClose();
 	};
 
